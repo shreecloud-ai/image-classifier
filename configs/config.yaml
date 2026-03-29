@@ -1,0 +1,37 @@
+# configs/config.yaml
+# All hyperparameters and settings live here
+
+dataset:
+  name: "CIFAR-10"
+  num_classes: 10
+  image_size: 32          # CIFAR-10 images are 32x32
+  mean: [0.4914, 0.4822, 0.4465]   # Official CIFAR-10 normalization values
+  std:  [0.2023, 0.1994, 0.2010]
+
+training:
+  batch_size: 128
+  epochs: 20
+  learning_rate: 0.001
+  num_workers: 4
+  seed: 42
+
+augmentation:
+  use_augmentation: true
+  random_crop: true
+  horizontal_flip: true
+  color_jitter: true
+
+model:
+  name: "custom_cnn"     # Change to "resnet18" later
+  dropout_rate: 0.3
+
+evaluation:
+  test_batch_size: 256
+
+paths:
+  data_dir: "data"
+  checkpoint_dir: "checkpoints"
+  mlflow_tracking_uri: "http://localhost:5000"   # We'll set this up later
+
+logging:
+  level: "INFO"
