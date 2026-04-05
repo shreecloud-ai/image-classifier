@@ -17,26 +17,27 @@ with open("configs/config.yaml", "r") as f:
 
 
 def get_transforms(train: bool = True):
-    """Return transforms for train or test set with augmentation."""
+    """Return transforms for train or test set with augmentation and resizing for ResNet."""
     if train and config['augmentation']['use_augmentation']:
-        return transforms.Compose([
-            transforms.RandomCrop(32, padding=4),           # Randomly crop with padding
-            transforms.RandomHorizontalFlip(),              # Flip image left-right randomly
-            transforms.ColorJitter(brightness=0.2, 
-                                 contrast=0.2, 
-                                 saturation=0.2, 
-                                 hue=0.1),                 # Randomly change colors
+        transform_list = [
+            transforms.RandomCrop(32, padding=4),
+            transforms.RandomHorizontalFlip(),
+            transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2, hue=0.1),
+            transforms.Resize((224, 224)),          # Important for ResNet-18
             transforms.ToTensor(),
             transforms.Normalize(mean=config['dataset']['mean'],
                                std=config['dataset']['std'])
-        ])
+        ]
     else:
-        # Test transform (no augmentation)
-        return transforms.Compose([
+        transform_list = [
+            transforms.Resize((224, 224)),          # Always resize for ResNet
             transforms.ToTensor(),
             transforms.Normalize(mean=config['dataset']['mean'],
                                std=config['dataset']['std'])
-        ])
+        ]
+    
+    # For Custom CNN we can keep 32x32, but for simplicity we resize both for now
+    return transforms.Compose(transform_list)
 
 
 def get_data_loaders():
